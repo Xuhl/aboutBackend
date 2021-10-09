@@ -10,3 +10,8 @@ Namesrv 核心入口在`NamesrvController`，
 - ` HashMap<String, BrokerData> brokerAddrTable` 保存broker 路由信息
 - ` HashMap<String/* brokerName */, BrokerData> brokerAddrTable` 集群信息
 - `HashMap<String/* brokerAddr */, BrokerLiveInfo> brokerLiveTable` 活跃的broker 信息
+
+## Broker 分析
+### 响应Producer 的sendMessage消息
+SendMessage 在`SendMessageProcessor` 中处理,具体处理方法是`org.apache.rocketmq.broker.processor.SendMessageProcessor#processRequest`,
+
