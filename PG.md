@@ -1,4 +1,17 @@
 # PG
+## SQL 执行顺序
+ sql 按如下顺序执行
+```
+(7)select (8) DISTICT(11) <SELECT LIST>
+(1) from <left table>
+(3) <join type> JOIN <right table>
+(2) on <join condition>
+(4) where <where condition>
+(5) group by <group by list>
+(6) having <having condition>
+(9) order by <order by list>
+(10) limit <limit offset>
+```
 ## 约束
 - 检查约束,  age int CHECK(age >=0 and age<= 150)
 - 非空约束 , age int not null
