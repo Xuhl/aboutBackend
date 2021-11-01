@@ -54,6 +54,21 @@
 通过并发创建索引，降低对现网用户操作冲击
 ```create index concurrently idx_name on table_name(xxx) ```
 
+### 多版本控制
+通常实现多版本控制有两种方式：
+- 写入新数据时，把旧数据挪到回滚段中，其他人读取数据时，从回滚段中再把数据读取出来
+- 写新数据时，旧数据不删除，而是把新数据插入
+PG 采用的是第二种方式。
+在多版本控制过程中，PostgreSQL主要就是通过t_xmin，t_xmax，cmin和cmax，ctid，t_infomask来唯一定义一个元组（t_xmin，t_xmax，cmin和cmax，ctid实际上也是一个表的隐藏的标记字段）
+- t_xmin 存储的是产生这个元组的事务ID，可能是insert或者update语句
+- t_xmax 存储的是删除或者锁定这个元组的事务ID
+- t_cid 包含cmin和cmax两个字段，分别存储创建这个元组的Command ID和删除这个元组的Command ID
+- t_xvac 存储的是VACUUM FULL 命令的事务ID
+
+PG 实现了HOT （HEAP ONLY tuple） 机制，。它存在的目的就是消除表非索引列更新对索引影响，它必须满足两个条件
+1. 索引字段的值不变。(其中任意一个索引字段的值发生了变化，则所有索引都需要新增版本)  
+2. 新的版本与旧的版本在同一个HEAP PAGE中。  
+
 ### 事务隔离
 4个事务隔离级别：
 - 读未提交
